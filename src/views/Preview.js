@@ -1,5 +1,5 @@
 import React from 'react';
 
 export default function Preview() {
-    return <h2>Preview</h2>;
+    return <h2>Preview a form</h2>;
 }
