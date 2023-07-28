@@ -1,3 +1,17 @@
+# Form Builder
+
+Make custom forms
+
+types
+- input
+- text area
+- dropdown
+- radio
+- checkbox
+
+additional
+- markup notes
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
