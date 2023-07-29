@@ -1,5 +1,6 @@
 import React from 'react';
 
+import FormControl from '@mui/material/FormControl';
 import FormGroup from '@mui/material/FormGroup';
 import InputLabel from '@mui/material/InputLabel';
 import Grid from '@mui/material/Grid';
@@ -13,60 +14,64 @@ import Checkbox from '@mui/material/Checkbox';
 import { Button } from '@mui/material';
 
 const selectComponent = (fieldState) => ({
-  text: <>
-    <InputLabel>{fieldState.label}</InputLabel>
-    <TextField label={fieldState.label} required={fieldState.required} />
-  </>,
-  textarea: <>
-    <InputLabel>{fieldState.label}</InputLabel>
-    <TextField label={fieldState.label} required={fieldState.required} multiline />
-  </>,
-  dropdown: <>
-    <InputLabel>{fieldState.label}</InputLabel>
-    <Select label={fieldState.label} required={fieldState.required}>
-      {fieldState.options?.map((elem, inx) => (
-        <MenuItem
-          key={`${elem.label}-${inx}`}
-          value={elem.label}
-        >
-          {elem.label}
-        </MenuItem>
-      ))}
-    </Select>
-  </>,
-  radio: <>
-    <InputLabel>{fieldState.label}</InputLabel>
-    <RadioGroup
-      name={fieldState.label}
-      required={fieldState.required}
-    >
-      {fieldState.options?.map((elem, inx) => (
-        <FormControlLabel
-          control={<Radio value={elem.value} />}
-          key={`${elem.label}-${inx}`}
-          label={elem.label} />
-      ))}
-    </RadioGroup>
-  </>,
-  checkbox: <>
-    <InputLabel>{fieldState.label}</InputLabel>
-    <FormGroup>
-      {fieldState.options?.map((elem, inx) => (
-        <FormControlLabel
-          control={<Checkbox />}
-          key={`${elem.label}-${inx}`}
-          label={elem.label} />
-      ))}
-
-    </FormGroup>
-    );
-  </>,
+  text: (
+    <>
+      <InputLabel>{fieldState.label}</InputLabel>
+      <TextField label={fieldState.label} />
+    </>),
+  textarea: (
+    <>
+      <InputLabel>{fieldState.label}</InputLabel>
+      <TextField label={fieldState.label} multiline />
+    </>),
+  dropdown: (
+    <>
+      <InputLabel>{fieldState.label}</InputLabel>
+      <Select label={fieldState.label}>
+        {fieldState.options?.map((elem, inx) => (
+          <MenuItem
+            key={`${elem.label}-${inx}`}
+            value={elem.label}
+          >
+            {elem.label}
+          </MenuItem>
+        ))}
+      </Select>
+    </>),
+  radio: (
+    <>
+      <InputLabel>{fieldState.label}</InputLabel>
+      <RadioGroup name={fieldState.label}>
+        {fieldState.options?.map((elem, inx) => (
+          <FormControlLabel
+            control={<Radio />}
+            key={`${elem.label}-${inx}`}
+            label={elem.label}
+            value={elem.value}
+          />
+        ))}
+      </RadioGroup>
+    </>),
+  checkbox: (
+    <>
+      <InputLabel>{fieldState.label}</InputLabel>
+      <FormGroup>
+        {fieldState.options?.map((elem, inx) => (
+          <FormControlLabel
+            control={<Checkbox />}
+            key={`${elem.label}-${inx}`}
+            label={elem.label}
+            value={elem.value}
+          />
+        ))}
+      </FormGroup>
+    </>),
 })
 
 export default function Preview({ componentName, fieldState, setFieldState }) {
   function _updateState({ target }) {
     if (target.dataset.level) {
-      const newOptions = fieldState.options
+      const newOptions = [...fieldState.options]
       newOptions.pop()
       setFieldState({
         ...fieldState,
@@ -132,7 +137,7 @@ export default function Preview({ componentName, fieldState, setFieldState }) {
               inputProps={{ 'data-key': 'required' }}
               onChange={_updateState}
             />}
-            label={`Required? ${fieldState.required}`}
+            label="Make this field required?"
           />
           {!!fieldState.options && (
             <>
@@ -159,7 +164,9 @@ export default function Preview({ componentName, fieldState, setFieldState }) {
           )}
         </Grid>
         <Grid item>
-          {selectComponent(fieldState)[componentName]}
+          <FormControl required={fieldState.required}>
+            {selectComponent(fieldState)[componentName]}
+          </FormControl>
         </Grid>
       </Grid>
     </div>

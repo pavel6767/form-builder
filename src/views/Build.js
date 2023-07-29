@@ -13,14 +13,6 @@ const NEW_FIELD_BASE_STATE = {
     label: '',
 }
 
-/**
-add new component
-edit inputs
-commit to local state
-
-option to remove
-*/
-
 export default function Build() {
     const [newField, setNewField] = React.useState(null)
     const [fieldState, setFieldState] = React.useState(null)
