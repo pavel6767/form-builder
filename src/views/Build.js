@@ -22,14 +22,8 @@ option to remove
 */
 
 export default function Build() {
-    const [newField, setNewField] = React.useState({
-        ...NEW_FIELD_BASE_STATE,
-        name: 'text'
-    })
-    const [fieldState, setFieldState] = React.useState({
-        label: '',
-        required: false,
-    })
+    const [newField, setNewField] = React.useState(null)
+    const [fieldState, setFieldState] = React.useState(null)
     const [form, setForm] = React.useState([])
 
     function _handleSelectChange({ target }) {

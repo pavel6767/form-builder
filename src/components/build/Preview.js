@@ -42,7 +42,7 @@ const selectComponent = (fieldState) => ({
     >
       {fieldState.options?.map((elem, inx) => (
         <FormControlLabel
-          control={<Radio />}
+          control={<Radio value={elem.value} />}
           key={`${elem.label}-${inx}`}
           label={elem.label} />
       ))}
@@ -66,9 +66,19 @@ const selectComponent = (fieldState) => ({
 export default function Preview({ componentName, fieldState, setFieldState }) {
   function _updateState({ target }) {
     if (target.dataset.level) {
-
+      const newOptions = fieldState.options
+      newOptions.pop()
+      setFieldState({
+        ...fieldState,
+        options: [
+          ...newOptions,
+          {
+            label: target.value,
+            value: target.value.slice(0).replaceAll(' ', '-')
+          }
+        ]
+      })
     } else if (target.dataset.key === 'required') {
-
       setFieldState({
         ...fieldState,
         required: target.checked
@@ -79,15 +89,27 @@ export default function Preview({ componentName, fieldState, setFieldState }) {
         [target.dataset.key]: target.value
       })
     }
-    setTimeout(() => {
-      console.log({
-        key: target.dataset.key,
-        value: target.value,
-        checked: target.checked,
-        required: fieldState.required
-      })
-    }, 200)
   }
+
+  function _addOption() {
+    setFieldState({
+      ...fieldState,
+      options: [
+        ...fieldState.options,
+        {
+          label: '',
+          value: ''
+        }
+      ]
+    })
+  }
+  function _removeOption() {
+    setFieldState({
+      ...fieldState,
+      options: fieldState.options.slice(0, fieldState.options.length - 1)
+    })
+  }
+
   return (
     <div>
       <h2>Preview</h2>
@@ -117,11 +139,22 @@ export default function Preview({ componentName, fieldState, setFieldState }) {
               <p>add an option</p>
               <TextField
                 inputProps={{ 'data-level': 1 }}
-                label={`Option No.${fieldState.options.length - 1}`}
-                value={fieldState.options[fieldState.options.length - 1].value}
+                label={`Option No.${fieldState.options.length}`}
+                value={fieldState.options[fieldState.options.length - 1].label}
                 onChange={_updateState}
               />
-              <Button>add option</Button>
+              <Button
+                onClick={_addOption}
+                disabled={!fieldState.options[fieldState.options.length - 1].label}
+              >
+                add option
+              </Button>
+              <Button
+                onClick={_removeOption}
+                disabled={fieldState.options.length === 1}
+              >
+                remove option
+              </Button>
             </>
           )}
         </Grid>
