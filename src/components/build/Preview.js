@@ -10,73 +10,83 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
+import { Button } from '@mui/material';
 
+const selectComponent = (fieldState) => ({
+  text: <>
+    <InputLabel>{fieldState.label}</InputLabel>
+    <TextField label={fieldState.label} required={fieldState.required} />
+  </>,
+  textarea: <>
+    <InputLabel>{fieldState.label}</InputLabel>
+    <TextField label={fieldState.label} required={fieldState.required} multiline />
+  </>,
+  dropdown: <>
+    <InputLabel>{fieldState.label}</InputLabel>
+    <Select label={fieldState.label} required={fieldState.required}>
+      {fieldState.options?.map((elem, inx) => (
+        <MenuItem
+          key={`${elem.label}-${inx}`}
+          value={elem.label}
+        >
+          {elem.label}
+        </MenuItem>
+      ))}
+    </Select>
+  </>,
+  radio: <>
+    <InputLabel>{fieldState.label}</InputLabel>
+    <RadioGroup
+      name={fieldState.label}
+      required={fieldState.required}
+    >
+      {fieldState.options?.map((elem, inx) => (
+        <FormControlLabel
+          control={<Radio />}
+          key={`${elem.label}-${inx}`}
+          label={elem.label} />
+      ))}
+    </RadioGroup>
+  </>,
+  checkbox: <>
+    <InputLabel>{fieldState.label}</InputLabel>
+    <FormGroup>
+      {fieldState.options?.map((elem, inx) => (
+        <FormControlLabel
+          control={<Checkbox />}
+          key={`${elem.label}-${inx}`}
+          label={elem.label} />
+      ))}
 
-const NEW_FIELD_BASE_STATE = {
-  text: {
-    label: '',
-    // required: false,
-  },
-  textarea: {
-    label: '',
+    </FormGroup>
+    );
+  </>,
+})
 
-  },
-  dropdown: {
-    label: '',
+export default function Preview({ componentName, fieldState, setFieldState }) {
+  function _updateState({ target }) {
+    if (target.dataset.level) {
 
-  },
-  radio: {
-    label: '',
+    } else if (target.dataset.key === 'required') {
 
-  },
-  checkbox: {
-    label: '',
-
-  },
-}
-
-export default function Preview({ componentName, newState, setNewState }) {
-  const selectComponent = {
-    text: <>
-      <InputLabel>{newState}</InputLabel>
-      <TextField label={newState} />
-    </>,
-    textarea: <>
-      <InputLabel>{newState}</InputLabel>
-      <TextField label={newState} multiline />
-    </>,
-    dropdown: <>
-      <InputLabel>{newState}</InputLabel>
-      {/* value={newField?.name || ''} */}
-      {/* onChange={setNewState} */}
-      <Select
-        label={newState}
-      >
-        <MenuItem value='ji'>hi</MenuItem>
-        {/* {INPUT_TYPES.map((elem) => (
-          <MenuItem key={elem[0]} value={elem[0]}>{elem[1]}</MenuItem>
-        ))} */}
-      </Select>
-    </>,
-    radio: <>
-      <InputLabel>{newState}</InputLabel>
-      <RadioGroup
-        aria-labelledby="demo-radio-buttons-group-label"
-        defaultValue="female"
-        name="radio-buttons-group"
-      >
-        <FormControlLabel value="female" control={<Radio />} label="Female" />
-      </RadioGroup>
-    </>,
-    checkbox: <>
-      <InputLabel>{newState}</InputLabel>
-      <FormGroup>
-        <FormControlLabel control={<Checkbox defaultChecked />} label="Label" />
-        <FormControlLabel required control={<Checkbox />} label="Required" />
-        <FormControlLabel disabled control={<Checkbox />} label="Disabled" />
-      </FormGroup>
-      );
-    </>,
+      setFieldState({
+        ...fieldState,
+        required: target.checked
+      })
+    } else {
+      setFieldState({
+        ...fieldState,
+        [target.dataset.key]: target.value
+      })
+    }
+    setTimeout(() => {
+      console.log({
+        key: target.dataset.key,
+        value: target.value,
+        checked: target.checked,
+        required: fieldState.required
+      })
+    }, 200)
   }
   return (
     <div>
@@ -88,11 +98,35 @@ export default function Preview({ componentName, newState, setNewState }) {
         alignItems="flex-end"
       >
         <Grid item>
-          {/* for all attributes, show a text field */}
-          <TextField label='set label' value={newState} onChange={(e) => setNewState(e.target.value)} />
+          <TextField
+            inputProps={{ 'data-key': 'label' }}
+            label='set label'
+            value={fieldState.label}
+            onChange={_updateState}
+          />
+          <FormControlLabel
+            control={<Checkbox
+              checked={fieldState.required}
+              inputProps={{ 'data-key': 'required' }}
+              onChange={_updateState}
+            />}
+            label={`Required? ${fieldState.required}`}
+          />
+          {!!fieldState.options && (
+            <>
+              <p>add an option</p>
+              <TextField
+                inputProps={{ 'data-level': 1 }}
+                label={`Option No.${fieldState.options.length - 1}`}
+                value={fieldState.options[fieldState.options.length - 1].value}
+                onChange={_updateState}
+              />
+              <Button>add option</Button>
+            </>
+          )}
         </Grid>
         <Grid item>
-          {selectComponent[componentName]}
+          {selectComponent(fieldState)[componentName]}
         </Grid>
       </Grid>
     </div>

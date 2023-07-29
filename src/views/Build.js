@@ -7,35 +7,10 @@ import Select from '@mui/material/Select';
 import Button from '@mui/material/Button';
 import Preview from '../components/build/Preview';
 
-const INPUT_TYPES = [
-    ['checkbox', 'Checkbox'],
-    ['dropdown', 'Dropdown'],
-    ['radio', 'Radio'],
-    ['text', 'Text (one line)'],
-    ['textarea', 'Text area'],
-]
+import { SELECTION_INPUTS, INPUT_TYPES } from '../utilities/constants.js'
 
 const NEW_FIELD_BASE_STATE = {
-    text: {
-        label: '',
-
-    },
-    textarea: {
-        label: '',
-
-    },
-    dropdown: {
-        label: '',
-
-    },
-    radio: {
-        label: '',
-
-    },
-    checkbox: {
-        label: '',
-
-    },
+    label: '',
 }
 
 /**
@@ -47,16 +22,26 @@ option to remove
 */
 
 export default function Build() {
-    const [newField, setNewField] = React.useState(null)
-    const [newState, setNewState] = React.useState('')
+    const [newField, setNewField] = React.useState({
+        ...NEW_FIELD_BASE_STATE,
+        name: 'text'
+    })
+    const [fieldState, setFieldState] = React.useState({
+        label: '',
+        required: false,
+    })
     const [form, setForm] = React.useState([])
 
-    function _handleChange(ev) {
+    function _handleSelectChange({ target }) {
         setNewField({
-            ...NEW_FIELD_BASE_STATE[ev.target.value],
-            name: ev.target.value
+            ...NEW_FIELD_BASE_STATE,
+            name: target.value
         })
-        setNewState('')
+        setFieldState({
+            label: '',
+            required: false,
+            ...(!!SELECTION_INPUTS.has(target.value) && { options: [{ label: '', value: '' }] })
+        })
     }
     function _addComponent() {
         setForm([...form, newField])
@@ -74,7 +59,7 @@ export default function Build() {
                 <Select
                     value={newField?.name || ''}
                     label="Add Field"
-                    onChange={_handleChange}
+                    onChange={_handleSelectChange}
                 >
                     {INPUT_TYPES.map((elem) => (
                         <MenuItem key={elem[0]} value={elem[0]}>{elem[1]}</MenuItem>
@@ -87,8 +72,8 @@ export default function Build() {
                 <Preview
                     {...{
                         componentName: newField.name,
-                        newState,
-                        setNewState
+                        fieldState,
+                        setFieldState
                     }}
                 />
                 <Button onClick={_addComponent}>Add component</Button>
