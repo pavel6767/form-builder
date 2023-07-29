@@ -66,9 +66,9 @@ const selectComponent = (fieldState) => ({
         ))}
       </FormGroup>
     </>),
-})
+})[fieldState.name]
 
-export default function Preview({ componentName, fieldState, setFieldState }) {
+export default function Preview({ fieldState, setFieldState }) {
   function _updateState({ target }) {
     if (target.dataset.level) {
       const newOptions = [...fieldState.options]
@@ -165,7 +165,7 @@ export default function Preview({ componentName, fieldState, setFieldState }) {
         </Grid>
         <Grid item>
           <FormControl required={fieldState.required}>
-            {selectComponent(fieldState)[componentName]}
+            {selectComponent(fieldState)}
           </FormControl>
         </Grid>
       </Grid>
