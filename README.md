@@ -1,5 +1,7 @@
+
 # Form Builder
 
+## about
 Make custom forms
 
 types
@@ -11,3 +13,7 @@ types
 
 additional
 - markup notes
+
+## run
+`yarn install`
+`yarn start`
